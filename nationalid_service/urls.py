@@ -16,7 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from nid_validator.views import NationalIDValidationView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('validate/', NationalIDValidationView.as_view(), name='validate_nid'),
+    
 ]

@@ -1,6 +1,3 @@
-from django.shortcuts import render
-
-# Create your views here.
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,10 +8,13 @@ from .utils import validate_nid
 
 class NationalIDValidationView(APIView):
     def post(self, request):
+        if not request.data:
+            return Response({"error": "You must submit data"}, status=400)
+        
         nid = request.data.get("nid")
         if not nid:
             return Response({"error": "You must submit an id"}, status=400)
-
+    
         existing = NationalID.objects.filter(nid=nid).first()
         if existing:
             return Response(NationalIDSerializer(existing).data)
