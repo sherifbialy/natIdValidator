@@ -82,14 +82,18 @@ DATABASES = {
 }
 
 REST_FRAMEWORK = {
-    'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "nid_validator.middleware.APIKeyAuthentication",
     ],
-    'DEFAULT_THROTTLE_RATES': {
-        'anon': '50/hour', 
-    }
+    "DEFAULT_THROTTLE_CLASSES": [
+        "rest_framework.throttling.AnonRateThrottle", 
+        "nid_validator.throttling.APIKeyRateThrottle"
+    ],
+    "DEFAULT_THROTTLE_RATES": {
+        "anon": "50/hr", 
+        "apikey": "100/hr",
+    },
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators

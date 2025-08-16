@@ -15,11 +15,15 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from nid_validator.views import NationalIDValidationView
+from django.urls import path, include
+from nid_validator.views import NationalIDValidationView, APIKeyViewSet
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r"api-keys", APIKeyViewSet, basename="apikey")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('validate/', NationalIDValidationView.as_view(), name='validate_nid'),
-    
+    path('', include(router.urls)),
 ]
