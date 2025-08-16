@@ -1,11 +1,10 @@
 
 from nid_validator.middleware import APIKeyAuthentication
+from nid_validator.service import validate_nid
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
 from .models import APIKey, NationalID
-from .serializers import APIKeySerializer, NationalIDSerializer
-from .utils import validate_nid
+from .serializers import APIKeySerializer
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser
 from rest_framework.permissions import AllowAny
@@ -27,20 +26,25 @@ class NationalIDValidationView(APIView):
 
         existing = NationalID.objects.filter(nid=nid).first()
         if existing:
-            return Response(NationalIDSerializer(existing).data)
+            return Response({
+                "valid": True,
+                "birth_date": existing.birth_date,
+                "governorate_code": existing.governorate_code,
+                "gender": existing.gender
 
-        try:
-            data = validate_nid(nid)
-        except ValueError as e:
-            return Response({"error": str(e)}, status=400)
+            })
 
-        saved = NationalID.objects.create(
+        data = validate_nid(nid)
+        if not data["valid"]:
+            return Response({"error": data["message"]}, status=400)
+            
+        NationalID.objects.create(
             nid=nid,
             birth_date=data["birth_date"],
             governorate_code=data["governorate_code"],
             gender=data["gender"]
         )
-        return Response(NationalIDSerializer(saved).data, status=201)
+        return Response(data, status=201)
     
 class APIKeyViewSet(viewsets.ModelViewSet):
     queryset = APIKey.objects.all()
