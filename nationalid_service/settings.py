@@ -90,11 +90,20 @@ REST_FRAMEWORK = {
         "nid_validator.throttling.APIKeyRateThrottle"
     ],
     "DEFAULT_THROTTLE_RATES": {
-        "anon": "50/hr", 
-        "apikey": "100/hr",
+        "anon": "50/min", 
+        "apikey": "100/min",
     },
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379/0",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        }
+    }
+}
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
