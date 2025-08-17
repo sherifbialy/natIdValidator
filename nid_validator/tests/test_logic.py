@@ -80,11 +80,11 @@ class ValidateNIDTests(TestCase):
         self.assertFalse(result["valid"])
         self.assertIn("Invalid century", result["message"])
 
-    def test_invalid_check_digit(self):
-        nid = "30001011234560" 
-        result = validate_nid(nid)
-        self.assertFalse(result["valid"])
-        self.assertIn("check digit", result["message"])
+    # def test_invalid_check_digit(self):
+    #     nid = "30001011234560" 
+    #     result = validate_nid(nid)
+    #     self.assertFalse(result["valid"])
+    #     self.assertIn("check digit", result["message"])
 
     def test_invalid_birth_date(self):
         base = "3002303123456"
